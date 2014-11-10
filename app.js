@@ -10,59 +10,28 @@ var express = require('express'),
 
 
 
-var app = module.exports = express();
+var app = express();
 
-/**
- * Configuration
- */
+app.configure(function(){
+  app.set('port', process.env.PORT || 3000);
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'hjs');
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.urlencoded());
+  app.use(app.router);
+  app.use(express.static(path.join(__dirname, 'public')));
+});
 
-// all environments
-
-// app.engine('.html', require('html'));
-
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'html');
-app.engine('html', require('ejs').renderFile);
-
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(app.router);
-
-// development only
-if (app.get('env') === 'development') {
+app.configure('development', function(){
   app.use(express.errorHandler());
-}
+});
 
-// production only
-if (app.get('env') === 'production') {
-  // TODO
-};
-
-
-/**
- * Routes
- */
-
-// serve index and view partials
 app.get('/', routes.index);
-app.get('/partials/:name', routes.partials);
+app.post('/vote/sms', routes.voteSMS);
 
-
-
-
-// redirect all others to the index (HTML5 history)
-app.get('/home', routes.index);
-app.get('/game', routes.index);
-app.get('/highscore', routes.index);
-
-
-/**
- * Start Server
- */
-
-http.createServer(app).listen(app.get('port'), function () {
-  console.log('Express server listening on port ' + app.get('port'));
+http.createServer(app).listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
 });
