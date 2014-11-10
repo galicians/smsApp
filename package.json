@@ -7,7 +7,9 @@
     "nodemon": "~1.0.8",
     "express": "~3.4.7",
     "ejs": "~0.8.5",
-    "bower": "~1.2.8"
+    "bower": "~1.2.8",
+    "cradle": "0.6.7",
+    "twilio": "1.6.0"
   },
   "devDependencies": {
     "karma": "^0.12.16",
