@@ -12,19 +12,28 @@ var events = require('../events');
 // };
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+
+  res.render('index', { title: 'Express Pablo' });
 };
 
 exports.voteSMS = function(request, response) {
+    var p = request.param
+    var print = new p
+    console.log(print)
+    console.log('before the if')
     if (twilio.validateExpressRequest(request, config.twilio.key, {url: config.twilio.smsWebhook}) || config.disableTwilioSigCheck) {
         response.header('Content-Type', 'text/xml');
         var body = request.param('Body').trim();
-        
+       console.log('inside the if') 
         // the number the vote it being sent to (this should match an Event)
         var to = request.param('To');
         
         // the voter, use this to keep people from voting more than once
         var from = request.param('From');
+
+        console.log("This route")
+
+ 
 
         events.findBy('phonenumber', to, function(err, event) {
             if (err) {

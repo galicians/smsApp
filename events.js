@@ -1,14 +1,14 @@
 var config = require('./config')
-var utils = require('./utils')
-var cradle = require('cradle')
-var connection = new(cradle.Connection)(config.couchdb.url, config.couchdb.port, {
+  , utils = require('./utils')
+  , cradle = require('cradle')
+  , connection = new(cradle.Connection)(config.couchdb.url, config.couchdb.port, {
         auth:{username: config.couchdb.username, password: config.couchdb.password},
         cache: true})
-var events = connection.database('events')
+  , events = connection.database('events')
 
+  // query events based on either shortname or phonenumber (both unique keys)
 
-
-var findBy = exports.findBy = function(attr, val, callback, retries) {
+  , findBy = exports.findBy = function(attr, val, callback, retries) {
       var retries = (typeof retries !== 'undefined') ? retries : 0;
       
       events.view('event/by'+utils.initcap(attr), {key: val}, function (err, res) { 
@@ -36,7 +36,9 @@ var findBy = exports.findBy = function(attr, val, callback, retries) {
       }); 
   }
 
-  var hasVoted = exports.hasVoted = function(event, number) {
+  // check to see if this user has voted for this event
+
+  , hasVoted = exports.hasVoted = function(event, number) {
       var retval = false;
       event.voteoptions.forEach(function(vo){
         if (vo.numbers.indexOf(number) >= 0) {
@@ -46,7 +48,9 @@ var findBy = exports.findBy = function(attr, val, callback, retries) {
       return retval;
   }
 
-  var saveVote = exports.saveVote = function(event, vote, from, callback) {
+  // persist the vote to the DB
+
+  , saveVote = exports.saveVote = function(event, vote, from, callback) {
       var index = vote - 1;
 
       event.voteoptions[index].votes++;
